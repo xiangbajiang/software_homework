@@ -7,7 +7,8 @@
         <el-table
             :data="logdata"
             stripe
-            border lazy :show-header="table_head">
+            border
+            lazy :show-header="table_head">
             <el-table-column prop="item" label="属性"></el-table-column>
             <el-table-column prop="value" label="值"></el-table-column>
         </el-table>

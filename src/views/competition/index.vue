@@ -13,7 +13,6 @@
     <el-table
         :data="tableData.slice( ( pages.currentPage - 1) * pages.pagesize, pages.currentPage * pages.pagesize )"
         stripe
-        border
         lazy
         style="width: 100%">
         <el-table-column fixed prop="date" label="序号"></el-table-column>
@@ -38,8 +37,8 @@
         @current-change="current_change">
       </el-pagination>
     </el-row>
-    <Details :dialogData="dialogPara.data" :dialogVis="dialogPara.DetailsVisible" @dialogClose="dialogDetailsClose"></Details>
-    <MyForm :dialogData="dialogPara.data" :dialogVis="dialogPara.MyFormVisisble" @dialogClose="dialogMyFormClose"></MyForm>
+    <Details :dialogData="dialogPara.data" :dialogVis="dialogPara.DetailsVisible" @dialogDetailsClose="dialogDetailsClose"></Details>
+    <MyForm :dialogData="dialogPara.data" :dialogVis="dialogPara.MyFormVisisble" @dialogDetailsClose="dialogMyFormClose"></MyForm>
   </div>
 </template>
 
@@ -47,7 +46,7 @@
   import Details from "./components/Details";
   import MyForm from "./components/MyForm"
   export default {
-    name: "topic",
+    name: "Competition",
     components: { Details, MyForm },
     data() {
       return {
@@ -144,9 +143,9 @@
     },
     methods: {
       handleClick(row) {
-        console.log(row);
         this.dialogPara.data = row;
         this.dialogPara.DetailsVisible = !this.dialogPara.DetailsVisible;
+        console.log(this.dialogPara.DetailsVisible)
       },
       handleEdit(index, row){
         console.log(index, row);
@@ -178,6 +177,7 @@
         console.log(this.condition_name);
       },
       dialogDetailsClose(value){
+        console.log(value)
         this.dialogPara.DetailsVisible = value;
       },
       dialogMyFormClose(value){

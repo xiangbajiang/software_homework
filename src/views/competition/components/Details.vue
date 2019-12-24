@@ -7,7 +7,7 @@
         <el-table
             :data="logdata"
             stripe
-            border lazy :show-header="table_head">
+            lazy :show-header="table_head">
             <el-table-column prop="item" label="属性"></el-table-column>
             <el-table-column prop="value" label="值"></el-table-column>
         </el-table>
@@ -19,6 +19,13 @@ export default {
     props:{
         dialogVis: Boolean,
         dialogData: Object
+    },
+    data(){
+        return {
+            vis: false,
+            table_head: false,
+            logdata: []
+        }
     },
     watch: {
         dialogVis (data) {
@@ -32,15 +39,7 @@ export default {
                 item["value"] = data[key]
                 table_data.push(item);
             }
-            console.log(table_data);
             this.logdata = table_data;
-        }
-    },
-    data(){
-        return {
-            vis: false,
-            table_head: false,
-            logdata: []
         }
     },
     methods: {

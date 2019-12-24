@@ -5,11 +5,10 @@ import Login from "../views/login/Login.vue";
 import Error403 from "../views/error/403.vue";
 import Home from "../views/home/index.vue";
 import Admin from "../views/admin/index.vue";
-import Expert from "../views/expert/index";
-import Topic from "../views/topic/index";
-import Add from "../views/expert/add";
-import Export from "../views/export/index";
-
+import Teacher from "../views/teacher/index.vue";
+import Student from "../views/student/index.vue";
+import Competition from "../views/competition/index.vue";
+import Type from "../views/type/index.vue";
 Vue.use(VueRouter);
 
 const routes = [
@@ -48,31 +47,31 @@ const routes = [
         }
       },
       {
-        path: "/expert",
-        component: Expert,
+        path: "/teacher",
+        component: Teacher,
         meta: {
-          title: "expert"
+          title: "teacher"
         }
       },
       {
-        path: "/add",
-        component: Add,
+        path: "/student",
+        component: Student,
         meta: {
-          title: "add"
+          title: "student"
         }
       },
       {
-        path: "/export",
-        component: Export,
+        path: "/type",
+        component: Type,
         meta: {
-          title: "export"
+          title: "type"
         }
       },
       {
-        path: "/topic",
-        component: Topic,
+        path: "/competition",
+        component: Competition,
         meta: {
-          title: "topic"
+          title: "competition"
         }
       }
     ]

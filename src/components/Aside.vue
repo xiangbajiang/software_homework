@@ -58,33 +58,23 @@ export default {
             },
             {
                 icon: "el-icon-edit-outline",
-                index: "expert",
-                title: "专家管理",
-                subs: [
-                    {
-                        index: "expert",
-                        title: "专家查询"
-                    },
-                    {
-                        index: "add",
-                        title: "专家新增",
-                    }
-                ]
+                index: "teacher",
+                title: "教师管理",
             },
             {
                 icon: "el-icon-edit-outline",
-                index: "export",
-                title: "专家导出",
+                index: "student",
+                title: "学生管理",
             },
             {
                 icon: "el-icon-edit-outline",
-                index: "topic",
-                title: "标签词推荐"
+                index: "type",
+                title: "类别管理"
             },
             {
                 icon: "el-icon-edit-outline",
-                index: "recommend",
-                title: "扩充专家"
+                index: "competition",
+                title: "比赛管理"
             }
         ]
     };
