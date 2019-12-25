@@ -12,7 +12,7 @@
       </el-col>
       <el-col :span="4">
         <el-button icon="el-icon-search" type="primary" @click="searchByName">搜索</el-button>
-        <el-button icon="el-icon-edit" type="primary">添加</el-button>
+        <el-button icon="el-icon-edit" type="primary" @click="handleAdd">添加</el-button>
       </el-col>
     </el-row>
     <el-divider content-position="left">教师列表</el-divider>
@@ -117,6 +117,10 @@
         console.log(row);
         this.dialogPara.data = row;
         this.dialogPara.DetailsVisible = !this.dialogPara.DetailsVisible;
+      },
+      handleAdd(){
+        this.dialogPara.data = null;
+        this.dialogPara.MyFormVisisble = !this.dialogPara.MyFormVisisble;
       },
       handleEdit(index, row) {
         console.log(index, row);

@@ -4,7 +4,7 @@
     <div class="login-form">
     <el-row :gutter="20">
       <el-col :lg="6" :sm="10" class="aa">
-          <h3>专家管理系统</h3>
+          <h3>获奖材料管理系统</h3>
           <el-form
             :model="ruleForm2"
             status-icon

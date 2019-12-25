@@ -5,31 +5,32 @@
         <el-input v-model="condition.name" placeholder="姓名" suffix-icon="el-icon-search"></el-input>
       </el-col>
       <el-col :span="4">
-        <el-select v-model="condition.status" clearable placeholder="教师状态">
+        <el-select v-model="condition.status" clearable placeholder="学生状态">
           <el-option v-for="item in status_options" :key="item.value" :label="item.label" :value="item.value">
           </el-option>
         </el-select>
       </el-col>
       <el-col :span="4">
         <el-button icon="el-icon-search" type="primary" @click="searchByName">搜索</el-button>
-        <el-button icon="el-icon-edit" type="primary">添加</el-button>
+        <el-button icon="el-icon-edit" type="primary" @click="handleAdd">添加</el-button>
       </el-col>
     </el-row>
     <el-divider content-position="left">学生列表</el-divider>
-    <el-table :data="tableData.slice( ( pages.currentPage - 1) * pages.pagesize, pages.currentPage * pages.pagesize )"
+    <el-table :data="tableData.slice( ( pages.currentPage - 1 ) * pages.pagesize, pages.currentPage * pages.pagesize )"
       stripe lazy border style="width: 100%">
       <el-table-column prop='id' label='序号' sortable></el-table-column>
-      <el-table-column prop='teacher_id' label='学生学号' sortable></el-table-column>
-      <el-table-column prop='teacher_name' label='学生姓名' sortable></el-table-column>
-      <el-table-column prop='teacher_email' label='学生邮箱'></el-table-column>
-      <el-table-column prop='teacher_age' label='出生年月' :formatter="dateFormat" sortable></el-table-column>
-      <el-table-column prop='teacher_password' label='密码'></el-table-column>
-      <el-table-column prop='teacher_status' label='状态'
+      <el-table-column prop='student_id' label='学生学号' sortable></el-table-column>
+      <el-table-column prop='student_name' label='学生姓名' sortable></el-table-column>
+      <el-table-column prop='student_email' label='学生邮箱'></el-table-column>
+      <el-table-column prop='student_age' label='出生年月' :formatter="dateFormat" sortable></el-table-column>
+      <el-table-column prop='student_sex' label='学生性别'></el-table-column>
+      <el-table-column prop='student_password' label='密码'></el-table-column>
+      <el-table-column prop='student_status' label='状态'
         :filters="[{ text: '正常', value: 1 }, { text: '禁用', value: 0 }, { text: '待审核', value: 2 }]"
         :filter-method="filterTag">
         <template slot-scope="{row}">
-          <el-tag :type="row.teacher_status | statusFilter">
-            {{ statusFormat(row.teacher_status) }}
+          <el-tag :type="row.student_status | statusFilter">
+            {{ statusFormat(row.student_status) }}
           </el-tag>
         </template>
       </el-table-column>
@@ -92,12 +93,13 @@
         },
         tableData: [{
           id: 1,
-          teacher_id: "2019011",
-          teacher_name: "李老师",
-          teacher_email: "111@qq.com",
-          teacher_age: '851961600000',
-          teacher_status: 2,
-          teacher_password: "123456"
+          student_id: "2019011",
+          student_name: "小王",
+          student_email: "111@qq.com",
+          student_age: '851961600000',
+          student_status: 2,
+          student_sex: "男",
+          student_password: "123456"
         }]
       }
     },
@@ -116,6 +118,10 @@
         console.log(row);
         this.dialogPara.data = row;
         this.dialogPara.DetailsVisible = !this.dialogPara.DetailsVisible;
+      },
+      handleAdd(){
+        this.dialogPara.data = null;
+        this.dialogPara.MyFormVisisble = !this.dialogPara.MyFormVisisble;
       },
       handleEdit(index, row) {
         console.log(index, row);
@@ -153,7 +159,7 @@
         this.dialogPara.MyFormVisisble = value;
       },
       dateFormat(row) {
-        var date = new Date(parseInt(row.teacher_age))
+        var date = new Date(parseInt(row.student_age))
         var Y = date.getFullYear() + '-'
         var M = (date.getMonth() + 1) + '-'
         var D = date.getDate()

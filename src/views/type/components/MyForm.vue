@@ -4,24 +4,27 @@
         :visible.sync="vis"
         width="30%"
         @close="closeDialog">
-        <el-form ref="form" :model="form" label-width="80px" class="teacher-info">
-            <el-form-item label="教师工号">
-                <el-input v-model="form.teacher_id"></el-input>
+        <el-form ref="form" :model="form" label-width="100px" class="teacher-info">
+            <el-form-item label="竞赛类型">
+                <el-input v-model="form.type"></el-input>
             </el-form-item>
-            <el-form-item label="教师姓名">
-                <el-input v-model="form.teacher_name"></el-input>
+            <el-form-item label="基础系数">
+                <el-input v-model="form.base"></el-input>
             </el-form-item>
-            <el-form-item label="教师邮箱">
-                <el-input v-model="form.teacher_email"></el-input>
+            <el-form-item label="一等奖系数">
+                <el-input v-model="form.coefficient_first"></el-input>
             </el-form-item>
-            <el-form-item label="出生日期">
-                <el-date-picker v-model="form.teacher_age" type="date" value-format="timestamp" placeholder="选择日期"></el-date-picker>
+            <el-form-item label="二等奖系数">
+                <el-input v-model="form.coefficient_second"></el-input>
             </el-form-item>
-            <el-form-item label="教师密码">
-                <el-input v-model="form.teacher_password"></el-input>
+            <el-form-item label="三等奖系数">
+                <el-input v-model="form.coefficient_third"></el-input>
+            </el-form-item>
+            <el-form-item label="其他奖项系数">
+                <el-input v-model="form.coefficient_other"></el-input>
             </el-form-item>
             <el-form-item label="账号状态">
-                <el-radio-group v-model="form.teacher_status">
+                <el-radio-group v-model="form.status">
                     <el-radio :label="2">待审核</el-radio>
                     <el-radio :label="1">正常</el-radio>
                     <el-radio :label="0">禁用</el-radio>
@@ -63,12 +66,14 @@ export default {
             table_head: false,
             logdata: [],
             form: {
-                teacher_id: "",
-                teacher_name: "",
-                teacher_age: "",
-                teacher_email: "",
-                teacher_password: "",
-                teacher_status: "",
+                id: "",
+                type: "",
+                base: "",
+                coefficient_first: "",
+                coefficient_second: "",
+                coefficient_third: "",
+                coefficient_other: "",
+                status: ""
             }
         }
     },

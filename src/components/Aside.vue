@@ -75,6 +75,11 @@ export default {
                 icon: "el-icon-edit-outline",
                 index: "competition",
                 title: "比赛管理"
+            },
+            {
+                icon: "el-icon-edit-outline",
+                index: "team",
+                title: "队伍管理"
             }
         ]
     };
