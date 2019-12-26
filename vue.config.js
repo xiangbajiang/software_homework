@@ -8,6 +8,7 @@ module.exports = {
     config.resolve.alias.set("@", resolve("src"));
   },
   devServer: {
+    host: "0.0.0.0",
     open: true //打开浏览器窗口
   },
   //定义scss全局变量

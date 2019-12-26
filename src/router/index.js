@@ -10,6 +10,7 @@ import Student from "../views/student/index.vue";
 import Competition from "../views/competition/index.vue";
 import Type from "../views/type/index.vue";
 import Team from "../views/team/index.vue";
+import Material from "../views/material/index.vue"
 Vue.use(VueRouter);
 
 const routes = [
@@ -80,6 +81,13 @@ const routes = [
         component: Team,
         meta: {
           title: "team"
+        }
+      },
+      {
+        path: "/material",
+        component: Material,
+        meta: {
+          title: "material"
         }
       }
     ]

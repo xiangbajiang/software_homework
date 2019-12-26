@@ -12,7 +12,6 @@
         </el-col>
         <el-col :span="4">
           <el-button icon="el-icon-search" type="primary" @click="searchByName">搜索</el-button>
-          <el-button icon="el-icon-edit" type="primary" @click="handleAdd">添加</el-button>
         </el-col>
       </el-row>
       <el-divider content-position="left">教师列表</el-divider>
@@ -21,12 +20,10 @@
         <el-table-column prop='id' label='序号' sortable></el-table-column>
         <el-table-column prop='team_id' label='队伍编号' sortable></el-table-column>
         <el-table-column prop='team_name' label='队伍名称' sortable></el-table-column>
-        <el-table-column prop='team_description' label='队伍描述'></el-table-column>
         <el-table-column prop='team_competition' label='参赛名称'></el-table-column>
-        <el-table-column prop='team_start' label='创建时间' :formatter="dateStartFormat"></el-table-column>
-        <el-table-column prop='team_end' label='解散时间' :formatter="dateEndFormat"></el-table-column>
         <el-table-column prop='team_member[0].name' label='指导老师'></el-table-column>
         <el-table-column prop='team_member[1].name' label='队长'></el-table-column>
+        <el-table-column prop='team_description' label='获奖名次'></el-table-column>
         <el-table-column prop='team_status' label='队伍状态'
           :filters="[{ text: '正常', value: 1 }, { text: '禁用', value: 0 }, { text: '待审核', value: 2 }]"
           :filter-method="filterTag">
@@ -39,7 +36,7 @@
         <el-table-column fixed="right" label="操作" width="210">
           <template slot-scope="scope">
             <el-button @click="handleClick(scope.row)" size="small">查看</el-button>
-            <el-button size="small" type="primary" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+            <el-button size="small" type="primary" @click="handleEdit(scope.$index, scope.row)">上传</el-button>
             <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
           </template>
         </el-table-column>
@@ -60,7 +57,7 @@
     import Details from "./components/Details";
     import MyForm from "./components/MyForm";
     export default {
-      name: "Team",
+      name: "Material",
       components: {
         Details,
         MyForm

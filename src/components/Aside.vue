@@ -80,6 +80,11 @@ export default {
                 icon: "el-icon-edit-outline",
                 index: "team",
                 title: "队伍管理"
+            },
+            {
+                icon: "el-icon-edit-outline",
+                index: "material",
+                title: "材料上传"
             }
         ]
     };

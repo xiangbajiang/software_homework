@@ -1,5 +1,6 @@
 <template>
     <el-dialog
+        v-if='vis'
         title="信息修改"
         :visible.sync="vis"
         width="30%"
@@ -52,6 +53,20 @@ export default {
         dialogData(data){
             if(!data){
                 console.log(data)
+                for(let key in this.form){
+                    this.form[key] = ""
+                }
+                if('team_member' in this.form){
+                    this.form.team_member = [{
+                    id: "",
+                    name: "",
+                    playrole: 1
+                },{
+                    id: "",
+                    name: "",
+                    playrole: 2
+                }]
+                }
             }else{
                 this.logdata = data;
                 for(let key in data){
