@@ -10,8 +10,10 @@
           </el-option>
         </el-select>
       </el-col>
-      <el-col :span="4">
+      <el-col :span="2">
         <el-button icon="el-icon-search" type="primary" @click="searchByName">搜索</el-button>
+      </el-col>
+      <el-col :span="2">
         <el-button icon="el-icon-edit" type="primary" @click="handleAdd">添加</el-button>
       </el-col>
     </el-row>
@@ -165,7 +167,7 @@
         });
       },
       current_change(currentPage) {
-        this.currentPage = currentPage;
+        this.pages.currentPage = currentPage;
       },
       searchByName() {
         console.log(this.condition_name);

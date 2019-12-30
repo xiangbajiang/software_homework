@@ -1,5 +1,5 @@
 <template>
-    <el-dialog v-if='vis' title="信息修改" :visible.sync="vis" width="30%" @close="closeDialog">
+    <el-dialog v-if='vis' :title="title" :visible.sync="vis" width="30%" @close="closeDialog">
         <el-form ref="form" :model="form" label-width="80px" class="teacher-info">
             <el-form-item label="队伍编号">
                 <el-input v-model="form.team_id"></el-input>
@@ -54,6 +54,7 @@
                 if (!data) {
                     console.log(data)
                     this.logdata = 1;
+                    this.title = "信息添加";
                     for (let key in this.form) {
                         this.form[key] = ""
                     }
@@ -69,6 +70,7 @@
                         }]
                     }
                 } else {
+                    this.title = "信息修改";
                     this.logdata = data;
                     for (let key in data) {
                         this.form[key] = data[key]
@@ -81,6 +83,7 @@
                 vis: false,
                 table_head: false,
                 logdata: [],
+                title: "",
                 form: {
                     id: "",
                     team_id: "",

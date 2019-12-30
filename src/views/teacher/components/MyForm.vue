@@ -1,5 +1,5 @@
 <template>
-    <el-dialog title="信息修改" :visible.sync="vis" width="30%" @close="closeDialog">
+    <el-dialog :title="title" :visible.sync="vis" width="30%" @close="closeDialog">
         <el-form ref="form" :model="form" label-width="80px" class="teacher-info">
             <el-form-item label="教师工号">
                 <el-input v-model="form.teacher_id"></el-input>
@@ -48,10 +48,12 @@
             dialogData(data) {
                 if (!data) {
                     this.logdata = 1;
+                    this.title = "信息添加";
                     for (let key in this.form) {
                         this.form[key] = ""
                     }
                 } else {
+                    this.title = "信息修改";
                     for (let key in data) {
                         this.form[key] = data[key]
                     }
@@ -64,6 +66,7 @@
                 vis: false,
                 table_head: false,
                 logdata: [],
+                title: "",
                 form: {
                     teacher_id: "",
                     teacher_name: "",

@@ -63,7 +63,7 @@ export const get_competition_info = get_competition =>
 
 //队伍的信息管理
 export const get_team_info = get_team_info =>
-  post(baseurl + "/admin/select_ALLTeam_info", get_team_info);
+  post(baseurl + "/admin/select_teamAndMemberInfo", get_team_info);
 
 export const delete_team_status = delete_team_status =>
   post(baseurl + "/admin/delete_team_info", delete_team_status);
@@ -77,7 +77,6 @@ export const insert_team_info = insert_team_memeber =>
 //上传材料
 export const insert_team_metails = insert_team_metails =>
   post(baseurl + "/teacher/insertAwardInfo", insert_team_metails);
-
 
 //上传
 export const upload = upload => get("/api/get/upload", upload);

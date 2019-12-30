@@ -160,7 +160,7 @@
           });
         },
         current_change(currentPage) {
-          this.currentPage = currentPage;
+          this.pages.currentPage = currentPage;
         },
         searchByName() {
           console.log(this.condition_name);

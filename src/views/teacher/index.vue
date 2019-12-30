@@ -10,13 +10,18 @@
           </el-option>
         </el-select>
       </el-col>
-      <el-col :span="4">
-        <el-button icon="el-icon-search" type="primary" @click="handleDownload">搜索</el-button>
+      <el-col :span="2">
+        <el-button icon="el-icon-search" type="primary" @click="searchByName">搜索</el-button>
+      </el-col>
+      <el-col :span="2">
         <el-button icon="el-icon-edit" type="primary" @click="handleAdd">添加</el-button>
+      </el-col>
+      <el-col :span="2">
+        <el-button icon="el-icon-search" type="primary" @click="handleDownload">下载</el-button>
       </el-col>
     </el-row>
     <el-divider content-position="left">教师列表</el-divider>
-    <el-table :data="tableData.slice( ( pages.currentPage - 1) * pages.pagesize, pages.currentPage * pages.pagesize )"
+    <el-table :data="showTable"
       stripe lazy border style="width: 100%">
       <el-table-column prop='id' label='序号' sortable></el-table-column>
       <el-table-column prop='teacher_id' label='教师工号' sortable></el-table-column>
@@ -24,6 +29,7 @@
       <el-table-column prop='teacher_email' label='教师邮箱'></el-table-column>
       <el-table-column prop='teacher_birth' label='出生年月' :formatter="dateFormat" sortable></el-table-column>
       <el-table-column prop='teacher_password' label='密码'></el-table-column>
+      <el-table-column prop='teacher_score' label='绩效'></el-table-column>
       <el-table-column prop='status' label='状态'
         :filters="[{ text: '正常', value: 1 }, { text: '禁用', value: 0 }, { text: '待审核', value: 2 }]"
         :filter-method="filterTag">
@@ -43,7 +49,7 @@
     </el-table>
     <el-row>
       <el-pagination background layout="prev, pager, next" :total="pages.total" :current-page="pages.currentPage"
-        @current-change="current_change">
+        :page-size="pages.pagesize" @current-change="current_change">
       </el-pagination>
     </el-row>
     <Details :dialogData="dialogPara.data" :dialogVis="dialogPara.DetailsVisible"
@@ -88,7 +94,7 @@
         pages: {
           pagesize: 10,
           currentPage: 1,
-          total: 1
+          total: 11
         },
         dialogPara: {
           DetailsVisible: false,
@@ -105,7 +111,8 @@
           teacher_email: "111@qq.com",
           teacher_birth: '8519616000',
           status: 2,
-          teacher_password: "123456"
+          teacher_password: "123456",
+          teacher_score: 4.6
         }]
       }
     },
@@ -118,6 +125,15 @@
         }
         return statusMap[status]
       }
+    },
+      computed: {
+      //showTable计算属性通过slice方法计算表格当前应显示的数据
+        showTable() {
+          return this.tableData.slice(
+            (this.pages.currentPage - 1) * this.pages.pagesize,
+            this.pages.currentPage * this.pages.pagesize
+          );
+        }
     },
     created() {
       this.resoleData()
@@ -168,7 +184,7 @@
         });
       },
       current_change(currentPage) {
-        this.currentPage = currentPage;
+        this.pages.currentPage = currentPage;
       },
       searchByName() {
         console.log(this.condition_name);
@@ -202,11 +218,9 @@
       handleDownload() {
         this.downloadLoading = true
         import('@/plugins/Export2Excel').then(excel => {
-          const tHeader = ['id', 'teacher_id', 'teacher_name', 'teacher_email', 'teacher_birth', 'status',
-            'teacher_password'
+          const tHeader = ['teacher_id', 'teacher_name', 'teacher_email', 'teacher_birth', 'status', 'teacher_score'
           ]
-          const filterVal = ['id', 'teacher_id', 'teacher_name', 'teacher_email', 'teacher_birth', 'status',
-            'teacher_password'
+          const filterVal = ['teacher_id', 'teacher_name', 'teacher_email', 'teacher_birth', 'status', 'teacher_score'
           ]
           const list = this.tableData
           const data = this.formatJson(filterVal, list)
