@@ -11,7 +11,7 @@
         </el-select>
       </el-col>
       <el-col :span="4">
-        <el-button icon="el-icon-search" type="primary" @click="searchByName">搜索</el-button>
+        <el-button icon="el-icon-search" type="primary" @click="handleDownload">搜索</el-button>
         <el-button icon="el-icon-edit" type="primary" @click="handleAdd">添加</el-button>
       </el-col>
     </el-row>
@@ -22,14 +22,14 @@
       <el-table-column prop='teacher_id' label='教师工号' sortable></el-table-column>
       <el-table-column prop='teacher_name' label='教师姓名' sortable></el-table-column>
       <el-table-column prop='teacher_email' label='教师邮箱'></el-table-column>
-      <el-table-column prop='teacher_age' label='出生年月' :formatter="dateFormat" sortable></el-table-column>
+      <el-table-column prop='teacher_birth' label='出生年月' :formatter="dateFormat" sortable></el-table-column>
       <el-table-column prop='teacher_password' label='密码'></el-table-column>
-      <el-table-column prop='teacher_status' label='状态'
+      <el-table-column prop='status' label='状态'
         :filters="[{ text: '正常', value: 1 }, { text: '禁用', value: 0 }, { text: '待审核', value: 2 }]"
         :filter-method="filterTag">
         <template slot-scope="{row}">
-          <el-tag :type="row.teacher_status | statusFilter">
-            {{ statusFormat(row.teacher_status) }}
+          <el-tag :type="row.status | statusFilter">
+            {{ statusFormat(row.status) }}
           </el-tag>
         </template>
       </el-table-column>
@@ -56,6 +56,10 @@
 <script>
   import Details from "./components/Details";
   import MyForm from "./components/MyForm";
+  import {
+    get_teacher_info,
+    delete_teacher_status
+  } from "../../api/api";
   export default {
     name: "Teacher",
     components: {
@@ -65,17 +69,17 @@
     data() {
       return {
         status_options: [{
-          value: 0,
-          label: '禁用',
-        },
-        {
-          value: 1,
-          label: "正常",
-        },
-        {
-          value: 2,
-          label: "待审核"
-        }
+            value: 0,
+            label: '禁用',
+          },
+          {
+            value: 1,
+            label: "正常",
+          },
+          {
+            value: 2,
+            label: "待审核"
+          }
         ],
         condition: {
           name: "", //按姓名查找
@@ -91,13 +95,16 @@
           MyFormVisisble: false,
           data: {}
         },
+        filename: '',
+        autoWidth: true,
+        bookType: 'xlsx',
         tableData: [{
           id: 1,
           teacher_id: "2019011",
           teacher_name: "李老师",
           teacher_email: "111@qq.com",
-          teacher_age: '851961600000',
-          teacher_status: 2,
+          teacher_birth: '8519616000',
+          status: 2,
           teacher_password: "123456"
         }]
       }
@@ -112,14 +119,17 @@
         return statusMap[status]
       }
     },
+    created() {
+      this.resoleData()
+    },
     methods: {
       handleClick(row) {
         console.log(row);
         this.dialogPara.data = row;
         this.dialogPara.DetailsVisible = !this.dialogPara.DetailsVisible;
       },
-      handleAdd(){
-        this.dialogPara.data = null;
+      handleAdd() {
+        this.dialogPara.data = {};
         this.dialogPara.MyFormVisisble = !this.dialogPara.MyFormVisisble;
       },
       handleEdit(index, row) {
@@ -134,10 +144,22 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          });
+          let param = new FormData();
+          param.set('teacher_id', row.teacher_id)
+          delete_teacher_status(param)
+            .then(res => {
+              console.log(res)
+              this.$message('success', res.message);
+              //重新请求
+              this.$message({
+                type: 'success',
+                message: '删除成功!'
+              });
+              this.resoleData();
+            })
+            .catch(err => {
+              this.$message("error", err.message);
+            });
         }).catch(() => {
           this.$message({
             type: 'info',
@@ -156,13 +178,14 @@
       },
       dialogMyFormClose(value) {
         this.dialogPara.MyFormVisisble = value;
+        this.resoleData();
       },
       dateFormat(row) {
-        var date = new Date(parseInt(row.teacher_age))
-        var Y = date.getFullYear() + '-'
-        var M = (date.getMonth() + 1) + '-'
-        var D = date.getDate()
-        return Y + M + D
+        var date = new Date(parseInt(row.teacher_birth) * 1000)
+        var Y = date.getFullYear() + '-';
+        var M = (date.getMonth() + 1) + '-';
+        var D = date.getDate();
+        return Y + M + D;
       },
       statusFormat(value) {
         if (value === 1) {
@@ -174,7 +197,46 @@
         }
       },
       filterTag(value, row) {
-        return row.tag === value;
+        return row.status === value;
+      },
+      handleDownload() {
+        this.downloadLoading = true
+        import('@/plugins/Export2Excel').then(excel => {
+          const tHeader = ['id', 'teacher_id', 'teacher_name', 'teacher_email', 'teacher_birth', 'status',
+            'teacher_password'
+          ]
+          const filterVal = ['id', 'teacher_id', 'teacher_name', 'teacher_email', 'teacher_birth', 'status',
+            'teacher_password'
+          ]
+          const list = this.tableData
+          const data = this.formatJson(filterVal, list)
+          excel.export_json_to_excel({
+            header: tHeader,
+            data,
+            filename: this.filename,
+            autoWidth: this.autoWidth,
+            bookType: this.bookType
+          })
+          this.downloadLoading = false
+        })
+      },
+      formatJson(filterVal, jsonData) {
+        return jsonData.map(v => filterVal.map(j => {
+          return v[j]
+        }))
+      },
+      resoleData() {
+        let param = new FormData();
+        get_teacher_info(param)
+          .then(res => {
+            console.log(res)
+            this.$message('success', res.message);
+            this.tableData = res.list
+            this.pages.total = res.list.length
+          })
+          .catch(err => {
+            this.$message("error", err.message);
+          });
       }
     }
   };

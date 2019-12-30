@@ -19,6 +19,12 @@
             <el-form-item prop="password">
               <el-input type="password" v-model="ruleForm2.password" autocomplete="off" show-password></el-input>
             </el-form-item>
+            <el-form-item prop="identity">
+              <el-radio-group v-model="ruleForm2.identity" class="radio-color">
+                <el-radio :label="2">教师</el-radio>
+                <el-radio :label="1">管理员</el-radio>
+              </el-radio-group>
+            </el-form-item>
             <el-form-item>
               <el-button type="primary" @click="submitForm('ruleForm2')">提交</el-button>
               <el-button @click="resetForm('ruleForm2')">重置</el-button>
@@ -55,14 +61,23 @@ export default {
         callback();
       }
     };
+    var validateIdentity = (rlue, value, callback) => {
+      if(!Number.isInteger(value)){
+        callback(new Error("请选择用户身份"))
+      }else{
+        callback();
+      }
+    }
     return {
       ruleForm2: {
         password: "admin",
-        username: "admin"
+        username: "admin",
+        identity: ""
       },
       rules2: {
         password: [{ validator: validatePass, trigger: "blur" }],
-        username: [{ validator: validateName, trigger: "blur" }]
+        username: [{ validator: validateName, trigger: "blur" }],
+        identity: [{ validator: validateIdentity, trigger: "blur" }]
       }
     };
   },
@@ -85,7 +100,7 @@ export default {
               this.$message("error", err.message);
             });
         } else {
-          return false;
+          this.$message("error", "请核对信息是否完整");
         }
       });
     },
@@ -126,5 +141,8 @@ export default {
     }
     .login-container .login-form .acount{
         text-align: left;
+    }
+    .radio-color .el-radio{
+        color: white;
     }
 </style>

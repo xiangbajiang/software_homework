@@ -59,11 +59,15 @@
 <script>
   import Details from "./components/Details";
   import MyForm from "./components/MyForm";
+  import{ get_type_info, delete_type_status } from "../../api/api";
   export default {
     name: "Type",
     components: {
       Details,
       MyForm
+    },
+    created() {
+      this.resoleData();
     },
     data() {
       return {
@@ -118,7 +122,6 @@
     },
     methods: {
       handleClick(row) {
-        console.log(row);
         this.dialogPara.data = row;
         this.dialogPara.DetailsVisible = !this.dialogPara.DetailsVisible;
       },
@@ -127,7 +130,6 @@
         this.dialogPara.MyFormVisisble = !this.dialogPara.MyFormVisisble;
       },
       handleEdit(index, row) {
-        console.log(index, row);
         this.dialogPara.data = row;
         this.dialogPara.MyFormVisisble = !this.dialogPara.MyFormVisisble;
       },
@@ -138,10 +140,20 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          });
+          let param = new FormData();
+          param.set('id', row.id)
+          delete_type_status(param)
+            .then(res => {
+              this.$message('success', res.message);
+              this.$message({
+                type: 'success',
+                message: '删除成功!'
+              });
+              this.resoleData();
+            })
+            .catch(err => {
+              this.$message("error", err.message);
+            });
         }).catch(() => {
           this.$message({
             type: 'info',
@@ -160,6 +172,7 @@
       },
       dialogMyFormClose(value) {
         this.dialogPara.MyFormVisisble = value;
+        this.resoleData();
       },
       dateFormat(row) {
         var date = new Date(parseInt(row.teacher_age))
@@ -178,7 +191,19 @@
         }
       },
       filterTag(value, row) {
-        return row.tag === value;
+        return row.status === value;
+      },
+      resoleData() {
+        let param = new FormData();
+        get_type_info(param)
+          .then(res => {
+            this.$message('success', res.message);
+            this.tableData = res.list
+            this.pages.total = res.list.length
+          })
+          .catch(err => {
+            this.$message("error", err.message);
+          });
       }
     }
   };

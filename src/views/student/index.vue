@@ -22,15 +22,15 @@
       <el-table-column prop='student_id' label='学生学号' sortable></el-table-column>
       <el-table-column prop='student_name' label='学生姓名' sortable></el-table-column>
       <el-table-column prop='student_email' label='学生邮箱'></el-table-column>
-      <el-table-column prop='student_age' label='出生年月' :formatter="dateFormat" sortable></el-table-column>
+      <el-table-column prop='student_birth' label='出生年月' :formatter="dateFormat" sortable></el-table-column>
       <el-table-column prop='student_sex' label='学生性别'></el-table-column>
       <el-table-column prop='student_password' label='密码'></el-table-column>
-      <el-table-column prop='student_status' label='状态'
+      <el-table-column prop='status' label='状态'
         :filters="[{ text: '正常', value: 1 }, { text: '禁用', value: 0 }, { text: '待审核', value: 2 }]"
         :filter-method="filterTag">
         <template slot-scope="{row}">
-          <el-tag :type="row.student_status | statusFilter">
-            {{ statusFormat(row.student_status) }}
+          <el-tag :type="row.status | statusFilter">
+            {{ statusFormat(row.status) }}
           </el-tag>
         </template>
       </el-table-column>
@@ -56,11 +56,18 @@
 <script>
   import Details from "./components/Details";
   import MyForm from "./components/MyForm";
+  import {
+    get_student_info,
+    delete_student_status
+  } from "../../api/api";
   export default {
     name: "Student",
     components: {
       Details,
       MyForm
+    },
+    created() {
+      this.resoleData();
     },
     data() {
       return {
@@ -96,8 +103,8 @@
           student_id: "2019011",
           student_name: "小王",
           student_email: "111@qq.com",
-          student_age: '851961600000',
-          student_status: 2,
+          student_birth: '851961600000',
+          status: 2,
           student_sex: "男",
           student_password: "123456"
         }]
@@ -119,7 +126,7 @@
         this.dialogPara.data = row;
         this.dialogPara.DetailsVisible = !this.dialogPara.DetailsVisible;
       },
-      handleAdd(){
+      handleAdd() {
         this.dialogPara.data = null;
         this.dialogPara.MyFormVisisble = !this.dialogPara.MyFormVisisble;
       },
@@ -135,10 +142,21 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          });
+          let param = new FormData();
+          param.set('student_id', row.student_id)
+          delete_student_status(param)
+            .then(res => {
+              console.log(res)
+              this.$message('success', res.message);
+              this.$message({
+                type: 'success',
+                message: '删除成功!'
+              });
+              this.resoleData();
+            })
+            .catch(err => {
+              this.$message("error", err.message);
+            });
         }).catch(() => {
           this.$message({
             type: 'info',
@@ -157,13 +175,18 @@
       },
       dialogMyFormClose(value) {
         this.dialogPara.MyFormVisisble = value;
+        this.resoleData()
       },
       dateFormat(row) {
-        var date = new Date(parseInt(row.student_age))
-        var Y = date.getFullYear() + '-'
-        var M = (date.getMonth() + 1) + '-'
-        var D = date.getDate()
-        return Y + M + D
+        if(row.student_birth){
+          var date = new Date(parseInt(row.student_birth))
+          var Y = date.getFullYear() + '-'
+          var M = (date.getMonth() + 1) + '-'
+          var D = date.getDate()
+          return Y + M + D
+        }else{
+          return ""
+        }
       },
       statusFormat(value) {
         if (value === 1) {
@@ -175,7 +198,20 @@
         }
       },
       filterTag(value, row) {
-        return row.tag === value;
+        return row.status === value;
+      },
+      resoleData() {
+        let param = new FormData();
+        get_student_info(param)
+          .then(res => {
+            console.log(res)
+            this.$message('success', res.message);
+            this.tableData = res.list
+            this.pages.total = res.list.length
+          })
+          .catch(err => {
+            this.$message("error", err.message);
+          });
       }
     }
   }

@@ -1,9 +1,5 @@
 <template>
-    <el-dialog
-        title="信息修改"
-        :visible.sync="vis"
-        width="30%"
-        @close="closeDialog">
+    <el-dialog title="信息修改" :visible.sync="vis" width="30%" @close="closeDialog">
         <el-form ref="form" :model="form" label-width="100px" class="teacher-info">
             <el-form-item label="竞赛类型">
                 <el-input v-model="form.type"></el-input>
@@ -37,67 +33,84 @@
     </el-dialog>
 </template>
 <script>
-export default {
-    name: "MyForm",
-    props:{
-        dialogVis: Boolean,
-        dialogData: Object
-    },
-    watch: {
-        dialogVis (data) {
-            this.vis = data;
+    import { update_type_info, insert_type_info } from "../../../api/api"
+    export default {
+        name: "MyForm",
+        props: {
+            dialogVis: Boolean,
+            dialogData: Object
         },
-        dialogData(data){
-            if(!data){
-                for(let key in this.form){
-                    this.form[key] = ""
-                }
-            }else{
-                this.logdata = data;
-                for(let key in data){
-                    this.form[key] = data[key]
+        watch: {
+            dialogVis(data) {
+                this.vis = data;
+            },
+            dialogData(data) {
+                if (!data) {
+                    this.logdata = 1;
+                    for (let key in this.form) {
+                        this.form[key] = ""
+                    }
+                } else {
+                    this.logdata = data;
+                    for (let key in data) {
+                        this.form[key] = data[key]
+                    }
                 }
             }
-        }
-    },
-    data(){
-        return {
-            vis: false,
-            table_head: false,
-            logdata: [],
-            form: {
-                id: "",
-                type: "",
-                base: "",
-                coefficient_first: "",
-                coefficient_second: "",
-                coefficient_third: "",
-                coefficient_other: "",
-                status: ""
-            }
-        }
-    },
-    methods: {
-        closeDialog(){
-            this.vis = false;
-            this.$emit("dialogMyFormClose", false);
         },
-        modifySubmit(){
-            if(this.logdata){
+        data() {
+            return {
+                vis: false,
+                table_head: false,
+                logdata: [],
+                form: {
+                    id: "",
+                    type: "",
+                    base: "",
+                    coefficient_first: "",
+                    coefficient_second: "",
+                    coefficient_third: "",
+                    coefficient_other: "",
+                    status: ""
+                }
+            }
+        },
+        methods: {
+            closeDialog() {
+                this.vis = false;
+                this.$emit("dialogMyFormClose", false);
+            },
+            modifySubmit() {
                 console.log(this.form)
-            }else{
-                console.log("这是个新增")
+                let param = new FormData()
+                for (let key in this.form) {
+                    param.set(key, this.form[key])
+                }
+                if (this.logdata === 1) {
+                    //新增
+                    insert_type_info(param)
+                        .then(res => {
+                            this.$message('success', res.message);
+                            this.closeDialog()
+                        })
+                } else {
+                    //更新
+                    update_type_info(param)
+                        .then(res => {
+                            this.$message('success', res.message);
+                            this.closeDialog()
+                        })
+                }
             }
-        }
-    },
-}
+        },
+    }
 </script>
 <style lang="css">
-    .teacher-info{
+    .teacher-info {
         text-align: left;
     }
-    .el-form .el-form-item__label{
+
+    .el-form .el-form-item__label {
         color: #606266;
     }
-    
 </style>

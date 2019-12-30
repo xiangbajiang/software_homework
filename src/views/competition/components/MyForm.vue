@@ -1,7 +1,7 @@
 <template>
     <el-dialog title="信息修改" :visible.sync="vis" width="30%" @close="closeDialog">
         <el-form ref="form" :model="form" label-width="80px" class="teacher-info">
-            <el-form-item label="竞赛名称">
+            <el-form-item label="竞赛编号">
                 <el-input v-model="form.competition_id"></el-input>
             </el-form-item>
             <el-form-item label="竞赛名称">
@@ -42,6 +42,7 @@
     </el-dialog>
 </template>
 <script>
+    import { update_competition_info, insert_competition_info } from "../../../api/api";
     export default {
         name: "MyForm",
         props: {
@@ -53,8 +54,8 @@
                 this.vis = data;
             },
             dialogData(data) {
-                console.log("初始值", data)
                 if (!data) {
+                    this.logdata = 1
                     for (let key in this.form) {
                         this.form[key] = ""
                     }
@@ -66,11 +67,10 @@
                         }
                     }
                     if(data['competition_start'] && data['competition_end'] && parseInt(data['competition_start']) <= parseInt(data['competition_end'])){
-                        this.form.competition_start_end.push(parseInt(data['competition_start']))
-                        this.form.competition_start_end.push(parseInt(data['competition_end']))
+                        this.form.competition_start_end.push(parseInt(data['competition_start']) * 1000)
+                        this.form.competition_start_end.push(parseInt(data['competition_end']) * 1000)
                     }
                 }
-                console.log(this.form)
             }
         },
         data() {
@@ -100,10 +100,36 @@
                 this.$emit("dialogMyFormClose", false);
             },
             modifySubmit() {
-                if (this.logdata) {
-                    console.log(this.form)
+                let param = new FormData()
+                for (let key in this.form) {
+                    if(key === "competition_start_end"){
+                        param.set("competition_start", (parseInt(this.form.competition_start_end[0]) / 1000).toString())
+                        param.set("competition_end", (parseInt(this.form.competition_start_end[1]) / 1000).toString())
+                    }else{
+                        param.set(key, this.form[key]);
+                    }
+                }
+                console.log(param)
+                if (this.logdata === 1) {
+                    //新增
+                    insert_competition_info(param)
+                        .then(res => {
+                            this.$message('success', res.message);
+                            this.closeDialog();
+                        })
+                        .catch(err => {
+                            console.log(err)
+                        })
                 } else {
-                    console.log("这是个新增")
+                    //更新
+                    update_competition_info(param)
+                        .then(res => {
+                            this.$message('success', res.message);
+                            this.closeDialog()
+                        })
+                        .catch(err => {
+                            console.log(err)
+                        })
                 }
             }
         },

@@ -58,6 +58,7 @@
 <script>
   import Details from "./components/Details";
   import MyForm from "./components/MyForm";
+  import { get_competition_info, delete_competition_status } from "../../api/api";
   export default {
     name: "Competition",
     components: {
@@ -116,6 +117,9 @@
         return statusMap[status]
       }
     },
+    created() {
+      this.resoleData();
+    },
     methods: {
       handleClick(row) {
         console.log(row);
@@ -138,10 +142,21 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          });
+          let param = new FormData();
+          param.set('competition_id', row.competition_id)
+          delete_competition_status(param)
+            .then(res => {
+              console.log(res)
+              this.$message('success', res.message);
+              this.$message({
+                type: 'success',
+                message: '删除成功!'
+              });
+              this.resoleData();
+            })
+            .catch(err => {
+              this.$message("error", err.message);
+            });
         }).catch(() => {
           this.$message({
             type: 'info',
@@ -160,20 +175,29 @@
       },
       dialogMyFormClose(value) {
         this.dialogPara.MyFormVisisble = value;
+        this.resoleData()
       },
       dateStartFormat(row) {
-        var date = new Date(parseInt(row.competition_start))
-        var Y = date.getFullYear() + '-'
-        var M = (date.getMonth() + 1) + '-'
-        var D = date.getDate()
-        return Y + M + D
+        if(row.competition_start){
+          var date = new Date(parseInt(row.competition_start) * 1000)
+          var Y = date.getFullYear() + '-'
+          var M = (date.getMonth() + 1) + '-'
+          var D = date.getDate()
+          return Y + M + D
+        }else{
+          return ""
+        }
       },
       dateEndFormat(row) {
-        var date = new Date(parseInt(row.competition_end))
-        var Y = date.getFullYear() + '-'
-        var M = (date.getMonth() + 1) + '-'
-        var D = date.getDate()
-        return Y + M + D
+        if(row.competition_end){
+          var date = new Date(parseInt(row.competition_end) * 1000)
+          var Y = date.getFullYear() + '-'
+          var M = (date.getMonth() + 1) + '-'
+          var D = date.getDate()
+          return Y + M + D
+        }else{
+          return ""
+        }
       },
       statusFormat(value) {
         if (value === 1) {
@@ -185,7 +209,20 @@
         }
       },
       filterTag(value, row) {
-        return row.tag === value;
+        return row.status === value;
+      },
+      resoleData() {
+        let param = new FormData();
+        get_competition_info(param)
+          .then(res => {
+            console.log(res)
+            this.$message('success', res.message);
+            this.tableData = res.list
+            this.pages.total = res.list.length
+          })
+          .catch(err => {
+            this.$message("error", err.message);
+          });
       }
     }
   };
